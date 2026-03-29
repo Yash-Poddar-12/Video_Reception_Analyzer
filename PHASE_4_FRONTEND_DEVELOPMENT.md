@@ -1,3 +1,29 @@
+## Agent Instructions
+
+You are an AI coding agent implementing Phase 4 of the Tube-Senti project.
+
+### Current project state
+- Phase 1 is complete.
+- Phase 2 is complete.
+- Phase 3 is complete and the backend is healthy at `http://localhost:3001`.
+
+### Important constraints
+- This project is running on Windows.
+- Use the existing project root and create the frontend inside `frontend/`.
+- Do NOT assume a clean empty `frontend/` folder.
+- If legacy placeholder frontend folders/files exist from earlier phases, remove or replace them before scaffolding the Next.js app.
+- Use Windows/PowerShell-friendly commands.
+- Keep all paths relative to the project root.
+- Keep the implementation close to the markdown, but fix anything needed for Windows or TypeScript compatibility.
+
+### Expected outputs
+- A Next.js 14 frontend in `frontend/`
+- Clerk sign-in/sign-up pages
+- Protected dashboard route
+- Video input form
+- Results panel with charts and sample comments
+- API client pointing to `http://localhost:3001`
+
 # Phase 4: Frontend Development
 
 ## Overview
@@ -61,8 +87,8 @@ By the end of Phase 4, you will have:
 
 | Dependency | Status | Description |
 |------------|--------|-------------|
-| Backend API | Running | POST /api/predict endpoint |
-| Backend Health | Passing | GET /api/health returns healthy |
+ Backend API | Healthy | POST /api/predict works correctly |
+| Backend Health | Healthy | GET /api/health returns healthy |
 
 ### Software Requirements
 
@@ -139,9 +165,12 @@ User Input → VideoForm → axios POST → Backend API → R Scripts → Respon
 ### 4.1 Create Next.js Application
 
 ```bash
-# Navigate to frontend directory
-cd /path/to/project
-mkdir -p frontend
+# Navigate to the project root
+cd "C:\Users\admin\Desktop\SEM_6\PROG DS PROJECT"
+
+# If frontend already contains legacy placeholder files from earlier phases,
+# remove or replace them before scaffolding the Next.js app.
+
 cd frontend
 
 # Create Next.js app with TypeScript and Tailwind
@@ -259,7 +288,9 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  import type { ReactNode } from 'react';
+  ...
+  children: ReactNode;
 }) {
   return (
     <ClerkProvider>
@@ -287,8 +318,6 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 // Define protected routes
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
-  '/history(.*)',
-  '/settings(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -1460,7 +1489,9 @@ function FeatureCard({
   title,
   description,
 }: {
-  icon: React.ReactNode;
+  import type { ReactNode } from 'react';
+  ...
+  icon: ReactNode;
   title: string;
   description: string;
 }) {

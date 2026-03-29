@@ -1,3 +1,38 @@
+## Agent Instructions
+
+You are an AI coding agent implementing Phase 3 of the Tube-Senti project.
+
+### Current project state
+- Phase 1 is complete.
+- Phase 2 is complete and produced:
+  - `models/nb_model.rds`
+  - `models/vocabulary.rds`
+  - `models/training_metadata.rds`
+  - `visuals/confusion_matrix.png`
+  - `visuals/model_comparison_performance.png`
+  - `visuals/model_comparison_time.png`
+
+### Important constraints
+- This project is running on Windows.
+- Do NOT use Linux-only paths like `/tmp` or `/usr/local/bin/Rscript`.
+- Use a project-local `tmp/` folder instead.
+- Keep all paths Windows-compatible and relative to the project root.
+- Do NOT rewrite logic unless needed for Windows or Phase 2 compatibility.
+- Use the existing Phase 2 trained model and vocabulary.
+- If any path or command in the markdown is Unix-specific, convert it to a Windows-safe equivalent.
+
+### Expected outputs
+- `r/api_fetch.R`
+- `r/predict.R`
+- `backend/server.js`
+- `backend/routes/predict.js`
+- `backend/routes/health.js`
+- `backend/utils/rRunner.js`
+- `backend/utils/logger.js`
+- `backend/config/index.js`
+- `backend/middleware/errorHandler.js`
+- `backend/package.json`
+
 # Phase 3: API Integration and Backend Development
 
 ## Overview
@@ -41,7 +76,7 @@ By the end of Phase 3, you will have:
    - Accepts a video URL/ID as input
    - Fetches comments using `httr` for HTTP requests
    - Parses JSON responses using `jsonlite`
-   - Outputs comments to `/tmp/comments.csv`
+   - Outputs comments to `tmp/comments.csv`
 3. **Created `predict.R`** that:
    - Loads the trained Naive Bayes model (`nb_model.rds`)
    - Preprocesses new comment text using the same `tm` pipeline
@@ -103,7 +138,7 @@ By the end of Phase 3, you will have:
         │                           │                              │    ▼
         │                           │                              │ ── Parse JSON
         │                           │                              │    ▼
-        │                           │              /tmp/comments.csv│ ── Write CSV
+        │                           │              tmp/comments.csv│ ── Write CSV
         │                           │◄─────────────────────────────┤
         │                           │                              │
         │                           │  child_process.spawn         │
@@ -180,7 +215,10 @@ Create `.env` file in project root:
 YOUTUBE_API_KEY=your_api_key_here
 NODE_ENV=development
 PORT=3001
-R_EXECUTABLE=/usr/local/bin/Rscript  # Adjust for your system
+R_EXECUTABLE=Rscript
+R_SCRIPTS_PATH=../r
+MODELS_PATH=../models
+TMP_DIR=../tmp
 ```
 
 ---
@@ -192,7 +230,7 @@ R_EXECUTABLE=/usr/local/bin/Rscript  # Adjust for your system
 `api_fetch.R` connects to YouTube Data API v3 to fetch comments for a given video.
 
 **Input:** Video ID (passed as command-line argument)  
-**Output:** `/tmp/comments.csv` with columns: `comment_id`, `text`, `author`, `published_at`, `like_count`
+**Output:** `tmp/comments.csv` with columns: `comment_id`, `text`, `author`, `published_at`, `like_count`
 
 ### 5.2 Required R Packages
 
@@ -219,7 +257,7 @@ Create `r/api_fetch.R`:
 #   API_KEY      - YouTube Data API v3 key
 #   MAX_COMMENTS - Maximum comments to fetch (default: 100)
 #
-# Output: /tmp/comments.csv
+# Output: tmp/comments.csv
 # ==============================================================================
 
 library(httr)
@@ -401,7 +439,8 @@ tryCatch({
     comments$text <- trimws(comments$text)
     
     # Save to CSV
-    output_path <- "/tmp/comments.csv"
+    output_path <- file.path("tmp", "comments.csv")
+    dir.create("tmp", showWarnings = FALSE, recursive = TRUE)
     write.csv(comments, output_path, row.names = FALSE)
     
     cat("Comments saved to:", output_path, "\n", file = stderr())
@@ -437,12 +476,12 @@ Rscript r/api_fetch.R "dQw4w9WgXcQ" "YOUR_API_KEY" 50
 #   "success": true,
 #   "video_id": "dQw4w9WgXcQ",
 #   "comments_fetched": 50,
-#   "output_file": "/tmp/comments.csv",
+#   "output_file": "tmp/comments.csv",
 #   "sample_comments": ["Great video!", "Love this song", "Classic!"]
 # }
 
 # Check the output file
-head /tmp/comments.csv
+Get-Content tmp\comments.csv | Select-Object -First 5
 ```
 
 ---
@@ -453,7 +492,7 @@ head /tmp/comments.csv
 
 `predict.R` loads the trained model and predicts sentiment for comments.
 
-**Input:** Path to comments CSV (or uses `/tmp/comments.csv` by default)  
+**Input:** Path to comments CSV (or uses `tmp/comments.csv` by default)  
 **Output:** JSON with predictions and Audience Sentiment Score (ASS)
 
 ### 6.2 Audience Sentiment Score (ASS) Formula
@@ -492,7 +531,7 @@ Create `r/predict.R`:
 # Usage: Rscript r/predict.R [COMMENTS_CSV_PATH]
 #
 # Arguments:
-#   COMMENTS_CSV_PATH - Path to comments CSV (default: /tmp/comments.csv)
+#   COMMENTS_CSV_PATH - Path to comments CSV (default: tmp/comments.csv)
 #
 # Output: JSON to stdout with predictions and sentiment score
 # ==============================================================================
@@ -506,7 +545,7 @@ library(dplyr)
 # Parse Command Line Arguments
 # ==============================================================================
 args <- commandArgs(trailingOnly = TRUE)
-comments_path <- ifelse(length(args) >= 1, args[1], "/tmp/comments.csv")
+comments_path <- ifelse(length(args) >= 1, args[1], "tmp/comments.csv")
 
 cat("Loading comments from:", comments_path, "\n", file = stderr())
 
@@ -755,13 +794,15 @@ tryCatch({
 
 ```bash
 # First, create a test comments file
-echo 'comment_id,text,author,published_at,like_count
+@'
+comment_id,text,author,published_at,like_count
 1,"This movie was absolutely fantastic! Best film ever!","User1","2024-01-01",10
 2,"Terrible waste of time. Boring and predictable.","User2","2024-01-02",5
-3,"It was okay, nothing special but entertaining.","User3","2024-01-03",3' > /tmp/test_comments.csv
+3,"It was okay, nothing special but entertaining.","User3","2024-01-03",3
+'@ | Set-Content tmp\test_comments.csv
 
 # Run prediction
-Rscript r/predict.R /tmp/test_comments.csv
+Rscript r/predict.R tmp\test_comments.csv
 
 # Expected output:
 # {
@@ -852,7 +893,8 @@ Create `backend/config/index.js`:
 // config/index.js - Application Configuration
 // ==============================================================================
 
-require('dotenv').config({ path: '../.env' });
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 module.exports = {
     // Server configuration
@@ -861,8 +903,15 @@ module.exports = {
     
     // R configuration
     rExecutable: process.env.R_EXECUTABLE || 'Rscript',
-    rScriptsPath: process.env.R_SCRIPTS_PATH || '../r',
-    modelsPath: process.env.MODELS_PATH || '../models',
+    rScriptsPath: process.env.R_SCRIPTS_PATH
+        ? path.resolve(__dirname, '../../', process.env.R_SCRIPTS_PATH)
+        : path.resolve(__dirname, '../../r'),
+    modelsPath: process.env.MODELS_PATH
+        ? path.resolve(__dirname, '../../', process.env.MODELS_PATH)
+        : path.resolve(__dirname, '../../models'),
+    tmpPath: process.env.TMP_DIR
+        ? path.resolve(__dirname, '../../', process.env.TMP_DIR)
+        : path.resolve(__dirname, '../../tmp'),
     
     // YouTube API
     youtubeApiKey: process.env.YOUTUBE_API_KEY,
@@ -875,8 +924,8 @@ module.exports = {
     maxComments: parseInt(process.env.MAX_COMMENTS) || 100,
     
     // CORS
-    corsOrigins: process.env.CORS_ORIGINS 
-        ? process.env.CORS_ORIGINS.split(',') 
+    corsOrigins: process.env.CORS_ORIGINS
+        ? process.env.CORS_ORIGINS.split(',')
         : ['http://localhost:3000'],
 };
 ```
@@ -1180,7 +1229,7 @@ router.post('/', async (req, res, next) => {
         logger.info('Step 2: Predicting sentiment...');
         
         const predictResult = await runRScript('predict.R', [
-            fetchResult.output_file,  // /tmp/comments.csv
+            fetchResult.output_file,  // tmp/comments.csv
         ]);
         
         if (!predictResult.success) {

@@ -1,3 +1,26 @@
+## 🧠 Agent Instructions
+
+You are an AI coding agent responsible for implementing Phase 1 of the Tube-Senti project.
+
+### Goals:
+- Set up R environment
+- Download Stanford IMDB dataset
+- Preprocess text using tm library
+- Create Document-Term Matrix
+- Save outputs in correct directory structure
+
+### Rules:
+- Follow the project structure strictly
+- Write clean, modular R code
+- Create files exactly as specified
+- Ensure reproducibility
+- Log progress step-by-step
+
+### Output:
+- All required R scripts
+- Data files
+- Folder structure
+
 # Phase 1: Data Acquisition and Preprocessing
 
 ## Overview

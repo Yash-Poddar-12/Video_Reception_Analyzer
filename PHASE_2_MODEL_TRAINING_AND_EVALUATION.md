@@ -1,3 +1,35 @@
+## Agent Instructions
+
+You are an AI coding agent working on Phase 2 of the Tube-Senti project.
+
+### Goal
+Implement Phase 2 using the actual Phase 1 outputs:
+- `data/processed/reviews_clean.csv` as metadata only
+- `data/processed/dtm.rds` as the feature matrix
+- `models/vocabulary.rds` for consistency
+
+### Rules
+- Do NOT assume `reviews_clean.csv` contains DTM feature columns
+- Do NOT rewrite or optimize the code unless needed to make it work with the Phase 1 outputs
+- Do NOT invent new logic
+- Keep file names exactly as specified
+- Create/update files in the correct folder structure
+- If the document mentions Logistic Regression comparison, include `glmnet` in the script
+
+### Expected outputs
+- `r/train_model.R`
+- `models/nb_model.rds`
+- `models/training_metadata.rds`
+- `visuals/confusion_matrix.png`
+- `visuals/model_comparison_performance.png`
+- `visuals/model_comparison_time.png`
+
+### Execution style
+- First verify Phase 1 outputs
+- Load metadata CSV + DTM RDS separately
+- Combine them before splitting
+- Then train, evaluate, compare, and save artifacts
+
 # Phase 2: Model Training and Evaluation
 
 ## Overview
@@ -49,7 +81,8 @@ By the end of Phase 2, you will have:
 
 | File | Location | Description |
 |------|----------|-------------|
-| `reviews_clean.csv` | `data/processed/` | Preprocessed data with DTM features |
+| `reviews_clean.csv` | `data/processed/` | Metadata only (`doc_id`, `sentiment`, `word_count`, `char_count`) |
+| `dtm.rds` | `data/processed/` | Sparse Document-Term Matrix features |
 | `vocabulary.rds` | `models/` | Saved vocabulary for consistency |
 | `text_preprocess.R` | `r/utils/` | Preprocessing functions |
 
@@ -62,6 +95,7 @@ library(caret)      # Model evaluation, confusion matrix, train-test split
 library(tm)         # Text mining (for DTM operations)
 library(dplyr)      # Data manipulation
 library(ggplot2)    # Visualization of results
+library(glmnet)
 ```
 
 ---
@@ -84,11 +118,33 @@ We use **stratified sampling** to ensure the class distribution (positive/negati
 ```r
 library(caret)
 
-# Load preprocessed data
-data <- read.csv("data/processed/reviews_clean.csv", stringsAsFactors = FALSE)
+# Load metadata from Phase 1
+# This file contains only basic information (no DTM features)
+metadata <- read.csv("data/processed/reviews_clean.csv", stringsAsFactors = FALSE)
 
-# Convert sentiment to factor
+# Load the sparse Document-Term Matrix (DTM)
+# This contains the actual text features used for model training
+dtm <- readRDS("data/processed/dtm.rds")
+
+# Convert sparse DTM into a regular data frame
+# Required because most ML models in R expect a data frame or matrix
+dtm_df <- as.data.frame(as.matrix(dtm))
+
+# Safety check: ensure both datasets have the same number of rows
+# (Each row must correspond to the same document)
+stopifnot(nrow(metadata) == nrow(dtm_df))
+
+# Combine metadata with DTM features into a single dataset
+# This will be used for training and evaluation
+data <- cbind(metadata, dtm_df)
+
+# Convert sentiment column into a factor (required for classification models)
 data$sentiment <- as.factor(data$sentiment)
+
+
+cat("Loaded metadata rows:", nrow(metadata), "\n")
+cat("DTM dimensions:", nrow(dtm_df), "x", ncol(dtm_df), "\n")
+cat("Combined data dimensions:", nrow(data), "x", ncol(data), "\n"))
 
 # Check class distribution
 cat("Original class distribution:\n")
@@ -636,7 +692,9 @@ Create `r/train_model.R` with the complete training pipeline:
 #
 # Execution: Rscript r/train_model.R
 #
-# Input:  data/processed/reviews_clean.csv (from Phase 1 preprocessing)
+# Input:  data/processed/reviews_clean.csv (metadata only)
+#         data/processed/dtm.rds (sparse DTM features)
+#         models/vocabulary.rds
 # Output: models/nb_model.rds (trained model)
 #         models/training_metadata.rds (training info)
 #         visuals/confusion_matrix.png
