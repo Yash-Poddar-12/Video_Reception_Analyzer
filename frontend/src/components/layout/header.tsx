@@ -6,7 +6,7 @@
 
 import Link from 'next/link';
 import { useAuth, UserButton } from '@clerk/nextjs';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, LineChart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function Header() {
@@ -27,6 +27,12 @@ export function Header() {
             <>
               <Link href="/dashboard">
                 <Button variant="ghost">Dashboard</Button>
+              </Link>
+              <Link href="/analytics">
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <LineChart className="h-4 w-4" />
+                  Analytics
+                </Button>
               </Link>
               <UserButton 
                 appearance={{
