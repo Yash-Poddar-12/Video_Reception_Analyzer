@@ -3,6 +3,7 @@
 // ==============================================================================
 
 import Link from 'next/link';
+import AuthNav from '@/components/AuthNav';
 
 export default function HomePage() {
   return (
@@ -10,33 +11,7 @@ export default function HomePage() {
 
       {/* ── TopAppBar ── */}
       <header className="fixed top-0 w-full z-50 bg-background/40 backdrop-blur-xl border-b border-outline-variant/20 shadow-[0_0_40px_rgba(255,255,255,0.04)]">
-        <nav className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-primary flex items-center justify-center">
-              <div className="w-3 h-3 border-2 border-on-primary" />
-            </div>
-            <span className="text-xl font-bold tracking-tighter text-primary font-headline">
-              TUBE-SENTI
-            </span>
-          </div>
-
-          {/* Nav actions */}
-          <div className="flex items-center gap-8">
-            <Link
-              href="/sign-in"
-              className="text-[12px] uppercase tracking-widest font-medium text-on-surface-variant hover:text-primary transition-colors duration-300"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              className="bg-primary text-on-primary px-5 py-2 text-[12px] uppercase tracking-widest font-bold scale-95 hover:scale-100 transition-transform duration-200"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </nav>
+        <AuthNav activePage="home" />
       </header>
 
       <main className="pt-24">
