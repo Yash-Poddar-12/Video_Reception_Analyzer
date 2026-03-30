@@ -107,10 +107,17 @@ router.post('/', async (req, res, next) => {
             commentsAnalyzed: fetchResult.comments_fetched,
             sentimentScore: predictResult.sentiment_score,
             interpretation: predictResult.interpretation,
-            statistics: predictResult.statistics,
-            samplePositive: predictResult.sample_positive,
-            sampleNegative: predictResult.sample_negative,
-            predictions: predictResult.predictions,
+            statistics: {
+                positive: predictResult.statistics.positive_count || 0,
+                negative: predictResult.statistics.negative_count || 0,
+                neutral: 0, // Binary model doesn't have neutral
+                positivePercent: predictResult.statistics.positive_percentage || 0,
+                negativePercent: predictResult.statistics.negative_percentage || 0,
+                neutralPercent: 0, // Binary model doesn't have neutral
+            },
+            samplePositive: predictResult.sample_positive || [],
+            sampleNegative: predictResult.sample_negative || [],
+            predictions: predictResult.predictions || [],
             processingTime: duration,
         });
         

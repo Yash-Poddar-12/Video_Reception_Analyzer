@@ -1,11 +1,10 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, BarChart3, PieChart, TrendingUp, MessageCircle, Activity, Globe } from "lucide-react";
 import Image from "next/image";
+import { Header } from "@/components/layout/header";
 
 /**
- * Analytics Dashboard Page
+ * Analytics Dashboard Page (TUBE-SENTI Theme)
  * 
  * Displays Power BI embedded dashboard and static R visualizations
  * for sentiment analysis insights.
@@ -17,35 +16,35 @@ const VISUALIZATIONS = [
     title: "Sentiment Distribution",
     description: "Bar chart showing distribution of positive, negative, and neutral sentiments",
     filename: "sentiment_distribution.png",
-    icon: PieChart,
+    icon: "pie_chart",
   },
   {
     id: "review_length_density",
     title: "Review Length Analysis",
     description: "Density plot showing the distribution of review lengths by sentiment",
     filename: "review_length_density.png",
-    icon: BarChart3,
+    icon: "bar_chart",
   },
   {
     id: "correlation_heatmap",
     title: "Feature Correlation",
     description: "Heatmap showing correlations between numerical features",
     filename: "correlation_heatmap.png",
-    icon: Activity,
+    icon: "grid_view",
   },
   {
     id: "wordcount_boxplot",
     title: "Word Count Distribution",
     description: "Box plot comparing word counts across sentiment categories",
     filename: "wordcount_boxplot.png",
-    icon: MessageCircle,
+    icon: "chat",
   },
   {
     id: "model_performance",
     title: "Model Performance",
     description: "Confusion matrix and performance metrics for sentiment classification",
     filename: "model_performance.png",
-    icon: TrendingUp,
+    icon: "trending_up",
   },
 ];
 
@@ -53,161 +52,207 @@ export default function AnalyticsPage() {
   const powerBIUrl = process.env.NEXT_PUBLIC_POWERBI_EMBED_URL;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-8 px-4">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-background text-on-background font-body relative">
+      {/* Decorative Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-1/3 -right-20 w-96 h-96 bg-primary opacity-[0.015] blur-[120px] rounded-full" />
+        <div className="absolute bottom-1/3 -left-20 w-80 h-80 bg-primary opacity-[0.01] blur-[100px] rounded-full" />
+      </div>
+      <div className="fixed top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-outline-variant/10 to-transparent pointer-events-none z-0" />
+      <div className="fixed top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-outline-variant/10 to-transparent pointer-events-none z-0" />
+
+      <Header />
+
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="text-center space-y-3">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Analytics Dashboard
+        <div className="mb-16">
+          <span className="inline-block text-[10px] uppercase tracking-[0.3em] font-medium text-on-surface-variant mb-3 font-label">
+            Data Visualization Module
+          </span>
+          <h1 className="text-4xl md:text-5xl font-headline font-extrabold tracking-tighter text-primary mb-4">
+            ANALYTICS DASHBOARD
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Comprehensive sentiment analysis visualizations and insights powered by R and Power BI
+          <p className="text-on-surface-variant max-w-2xl">
+            Comprehensive sentiment analysis visualizations and insights powered by R statistical computing and Microsoft Power BI.
           </p>
         </div>
 
         {/* Power BI Embed Section */}
-        <Card className="shadow-lg border-2">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-6 w-6" />
-                  Interactive Power BI Dashboard
-                </CardTitle>
-                <CardDescription className="mt-2">
-                  {powerBIUrl
-                    ? "Explore interactive visualizations with drill-down capabilities"
-                    : "Configure Power BI to enable interactive analytics"}
-                </CardDescription>
+        <section className="mb-16">
+          <div className="border border-outline-variant/20 bg-surface-container-lowest">
+            {/* Card Header */}
+            <div className="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 border border-outline-variant/40 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    globe
+                  </span>
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold tracking-tight text-on-surface font-headline">
+                    Interactive Power BI Dashboard
+                  </h2>
+                  <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-label">
+                    {powerBIUrl
+                      ? "Drill-down enabled"
+                      : "Configuration required"}
+                  </p>
+                </div>
               </div>
               {powerBIUrl && (
                 <a
                   href={powerBIUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-primary hover:opacity-80 transition-opacity"
                 >
                   Open in Power BI
-                  <ExternalLink className="h-4 w-4" />
+                  <span className="material-symbols-outlined text-sm">open_in_new</span>
                 </a>
               )}
             </div>
-          </CardHeader>
-          <CardContent>
-            {powerBIUrl ? (
-              <div className="w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden shadow-inner">
-                <iframe
-                  src={powerBIUrl}
-                  className="w-full h-full border-0"
-                  title="Power BI Dashboard"
-                  allowFullScreen
-                />
-              </div>
-            ) : (
-              <div className="w-full aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-lg flex flex-col items-center justify-center p-8 text-center">
-                <Globe className="h-16 w-16 text-slate-400 dark:text-slate-500 mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                  Power BI Not Configured
-                </h3>
-                <p className="text-slate-600 dark:text-slate-300 max-w-md mb-4">
-                  To enable the interactive dashboard, publish your Power BI report and add the embed URL
-                  to your environment configuration.
-                </p>
-                <div className="text-sm text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 px-4 py-2 rounded font-mono">
-                  NEXT_PUBLIC_POWERBI_EMBED_URL=your_url_here
+
+            {/* Card Content */}
+            <div className="p-6">
+              {powerBIUrl ? (
+                <div className="w-full aspect-video bg-surface-container overflow-hidden border border-outline-variant/20">
+                  <iframe
+                    src={powerBIUrl}
+                    className="w-full h-full border-0"
+                    title="Power BI Dashboard"
+                    allowFullScreen
+                  />
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
-                  See RUN-5.md for detailed setup instructions
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              ) : (
+                <div className="w-full aspect-video bg-surface-container flex flex-col items-center justify-center p-8 text-center border border-outline-variant/20">
+                  <div className="w-16 h-16 border border-outline-variant/30 flex items-center justify-center mb-6">
+                    <span className="material-symbols-outlined text-3xl text-outline">globe</span>
+                  </div>
+                  <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline mb-2">
+                    Power BI Not Configured
+                  </h3>
+                  <p className="text-sm text-on-surface-variant max-w-md mb-6">
+                    To enable the interactive dashboard, publish your Power BI report and add the embed URL
+                    to your environment configuration.
+                  </p>
+                  <div className="text-xs text-on-surface-variant bg-surface-container-lowest px-4 py-3 font-mono border border-outline-variant/20">
+                    NEXT_PUBLIC_POWERBI_EMBED_URL=your_url_here
+                  </div>
+                  <p className="text-[10px] uppercase tracking-widest text-outline mt-4 font-label">
+                    See RUN-5.md for setup instructions
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
 
         {/* Static Visualizations Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-              Static Visualizations
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Generated with R • High-resolution PNG
-            </p>
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-10 bg-primary" />
+              <div>
+                <h2 className="text-2xl font-headline font-bold tracking-tight text-on-surface">
+                  Static Visualizations
+                </h2>
+                <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-label">
+                  Generated with R • High-resolution PNG
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {VISUALIZATIONS.map((viz) => {
-              const Icon = viz.icon;
-              return (
-                <Card
-                  key={viz.id}
-                  className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-blue-200 dark:hover:border-blue-700"
-                >
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-outline-variant/20">
+            {VISUALIZATIONS.map((viz, idx) => (
+              <div
+                key={viz.id}
+                className={`group bg-surface-container-lowest hover:bg-surface-container-low transition-colors ${
+                  idx < VISUALIZATIONS.length - 1 ? 'border-b md:border-b lg:border-b-0' : ''
+                } ${
+                  (idx + 1) % 3 !== 0 ? 'lg:border-r' : ''
+                } ${
+                  (idx + 1) % 2 !== 0 && idx < VISUALIZATIONS.length - 1 ? 'md:border-r lg:border-r-0' : ''
+                } border-outline-variant/20`}
+              >
+                {/* Card Header */}
+                <div className="p-5 border-b border-outline-variant/20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      {viz.icon}
+                    </span>
+                    <h3 className="text-sm font-bold tracking-tight text-on-surface font-headline">
                       {viz.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      {viz.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="relative w-full aspect-video bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden shadow-md">
-                      <Image
-                        src={`/visuals/${viz.filename}`}
-                        alt={viz.title}
-                        fill
-                        className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                        priority={viz.id === "sentiment_distribution"}
-                        onError={(e) => {
-                          // Fallback for missing images
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const parent = target.parentElement;
-                          if (parent) {
-                            parent.innerHTML = `
-                              <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
-                                <svg class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <p class="text-sm">Visualization not found</p>
-                                <p class="text-xs mt-1">Run: bash setup_phase5.sh</p>
-                              </div>
-                            `;
-                          }
-                        }}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                    {viz.description}
+                  </p>
+                </div>
+
+                {/* Card Content */}
+                <div className="p-4">
+                  <div className="relative w-full aspect-video bg-surface-container overflow-hidden border border-outline-variant/20 group-hover:border-outline-variant/40 transition-colors">
+                    <Image
+                      src={`/visuals/${viz.filename}`}
+                      alt={viz.title}
+                      fill
+                      className="object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
+                      priority={viz.id === "sentiment_distribution"}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div class="w-full h-full flex flex-col items-center justify-center text-outline">
+                              <span class="material-symbols-outlined text-3xl mb-2">image_not_supported</span>
+                              <p class="text-[10px] uppercase tracking-widest">Visualization not found</p>
+                              <p class="text-[9px] mt-1 text-outline-variant">Run: bash setup_phase5.sh</p>
+                            </div>
+                          `;
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
         {/* Info Section */}
-        <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-          <CardHeader>
-            <CardTitle className="text-blue-900 dark:text-blue-100">
+        <section className="border border-outline-variant/20 bg-surface-container-lowest p-8">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-10 h-10 border border-outline-variant/40 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                info
+              </span>
+            </div>
+            <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline">
               About These Visualizations
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+            </h3>
+          </div>
+
+          <div className="space-y-4 text-sm text-on-surface-variant leading-relaxed">
             <p>
-              <strong>Static visualizations</strong> are generated using R scripts from the training data.
+              <span className="text-primary font-bold">Static visualizations</span> are generated using R scripts from the training data.
               They provide insights into sentiment distribution, review characteristics, and model performance.
             </p>
             <p>
-              <strong>Power BI dashboard</strong> offers interactive exploration with filtering, drill-down,
+              <span className="text-primary font-bold">Power BI dashboard</span> offers interactive exploration with filtering, drill-down,
               and real-time data refresh capabilities. Requires Windows and Power BI Desktop for setup.
             </p>
-            <p className="pt-2 border-t border-blue-200 dark:border-blue-700">
-              📖 For setup instructions and R code snippets, see <code className="px-2 py-1 bg-white dark:bg-slate-800 rounded">RUN-5.md</code>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="pt-4 border-t border-outline-variant/20 flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-base">menu_book</span>
+              <p className="text-on-surface-variant">
+                For setup instructions and R code snippets, see{' '}
+                <code className="px-2 py-1 bg-surface-container text-primary font-mono text-xs">RUN-5.md</code>
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

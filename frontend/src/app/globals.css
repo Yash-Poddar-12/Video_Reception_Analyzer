@@ -76,6 +76,19 @@
     }
   }
 
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
   .text-gradient {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-on-surface-variant;
   }

@@ -1,5 +1,5 @@
 // ==============================================================================
-// components/dashboard/video-form.tsx - Video Input Form
+// components/dashboard/video-form.tsx - Video Input Form (TUBE-SENTI Theme)
 // ==============================================================================
 
 'use client';
@@ -7,10 +7,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Video, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { extractVideoId } from '@/lib/utils';
 
 const videoFormSchema = z.object({
@@ -45,41 +41,66 @@ export function VideoForm({ onSubmit, isLoading }: VideoFormProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center text-2xl">
-          <Video className="h-6 w-6 mr-2 text-red-600" />
-          Analyze YouTube Video
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          <div>
-            <Input
-              {...register('videoUrl')}
-              placeholder="https://www.youtube.com/watch?v=..."
-              disabled={isLoading}
-              className={errors.videoUrl ? 'border-red-500' : ''}
-            />
-            {errors.videoUrl && (
-              <p className="text-sm text-red-600 mt-1">{errors.videoUrl.message}</p>
-            )}
-            <p className="text-sm text-gray-500 mt-2">
-              Paste a YouTube video URL to analyze its comment sentiment
-            </p>
-          </div>
-          <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing...
-              </>
-            ) : (
-              'Analyze Sentiment'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="border border-outline-variant/20 bg-surface-container-lowest p-8">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-10 h-10 border border-outline-variant/40 flex items-center justify-center">
+          <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+            play_circle
+          </span>
+        </div>
+        <div>
+          <h2 className="text-lg font-bold tracking-tight text-on-surface font-headline">
+            Initialize Analysis
+          </h2>
+          <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-label">
+            Input YouTube Video URL
+          </p>
+        </div>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+        <div>
+          <label className="block text-[9px] uppercase tracking-widest text-on-surface-variant font-medium mb-2 font-label">
+            Video URL
+          </label>
+          <input
+            {...register('videoUrl')}
+            placeholder="https://www.youtube.com/watch?v=..."
+            disabled={isLoading}
+            className={`w-full bg-surface-container-lowest border outline-none ring-1 text-on-surface text-sm tracking-wide py-3.5 px-4 transition-all placeholder:text-outline font-mono ${
+              errors.videoUrl
+                ? 'ring-error/50 border-error/30'
+                : 'ring-outline-variant/30 border-outline-variant/20 focus:ring-primary/50'
+            }`}
+          />
+          {errors.videoUrl && (
+            <p className="text-[10px] text-error mt-2 tracking-wide">{errors.videoUrl.message}</p>
+          )}
+          <p className="text-[10px] text-on-surface-variant mt-2 tracking-wide">
+            Supports standard URLs, short links (youtu.be), and embed formats
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-primary text-on-primary font-bold uppercase tracking-[0.15em] text-[11px] py-4 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+        >
+          {isLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-on-primary/30 border-t-on-primary rounded-full animate-spin" />
+              Processing Stream...
+            </>
+          ) : (
+            <>
+              <span className="material-symbols-outlined text-base">query_stats</span>
+              Execute Analysis
+            </>
+          )}
+        </button>
+      </form>
+    </div>
   );
 }
