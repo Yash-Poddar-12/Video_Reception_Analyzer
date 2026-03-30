@@ -1,5 +1,5 @@
 /* ==============================================================================
- * globals.css - Global Styles
+ * globals.css - Global Styles (TUBE-SENTI Theme)
  * ============================================================================== */
 
 @tailwind base;
@@ -7,31 +7,56 @@
 @tailwind utilities;
 
 :root {
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #1f2937;
-  --accent: #8b5cf6;
-  --accent-foreground: #ffffff;
+  --background: #131313;
+  --foreground: #e2e2e2;
 }
 
 @layer base {
-  * {
-    @apply border-gray-200;
+  html {
+    scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-background text-on-background font-body;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    @apply bg-primary text-on-primary;
+  }
+
+  *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-outline-variant rounded-full;
   }
 }
 
 @layer components {
-  .gradient-bg {
-    @apply bg-gradient-to-br from-blue-50 via-white to-purple-50;
+  .glass-panel {
+    background: rgba(19, 19, 19, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
-  
-  .container {
-    @apply mx-auto px-4 max-w-7xl;
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
   }
 }
 
@@ -39,7 +64,7 @@
   .animate-in {
     animation: slideInFromBottom 0.5s ease-out;
   }
-  
+
   @keyframes slideInFromBottom {
     from {
       opacity: 0;
@@ -49,5 +74,9 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-on-surface-variant;
   }
 }
