@@ -37,7 +37,7 @@ export function ResultsPanel({ data }: ResultsPanelProps) {
           <div><span className="text-outline">VIDEO_ID:</span> <span className="text-on-surface">{data.videoId}</span></div>
           <div><span className="text-outline">COMMENTS:</span> <span className="text-on-surface">{data.commentsAnalyzed}</span></div>
           <div><span className="text-outline">LATENCY:</span> <span className="text-on-surface">{(data.processingTime / 1000).toFixed(2)}s</span></div>
-          <div><span className="text-outline">MODEL:</span> <span className="text-on-surface">NAIVE_BAYES_v1.0</span></div>
+          <div><span className="text-outline">MODEL:</span> <span className="text-on-surface">{data.modelInfo?.mode === 'checkpoint' ? 'MSSF_FINETUNED' : 'MSSF_BASE'}</span></div>
         </div>
       </div>
 
@@ -87,13 +87,13 @@ export function ResultsPanel({ data }: ResultsPanelProps) {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px] text-on-surface-variant leading-relaxed">
               <div>
-                <span className="text-primary font-bold">Preprocessing:</span> Comments tokenized, stopwords removed, stemmed for feature extraction.
+                <span className="text-primary font-bold">Text Branch:</span> Twitter-RoBERTa (124M tweet pre-training) — extracts 768-dim CLS embeddings that understand informal language, slang, and elongation.
               </div>
               <div>
-                <span className="text-primary font-bold">Classification:</span> Naive Bayes binary classifier trained on 50k+ labeled YouTube comments.
+                <span className="text-primary font-bold">Emoji Branch:</span> First-class emoji sentiment via Kralj Novak lexicon — &ldquo;💀💀💀&rdquo; is correctly read as negative, not positive.
               </div>
               <div>
-                <span className="text-primary font-bold">Confidence:</span> Probability scores indicate model certainty for each prediction.
+                <span className="text-primary font-bold">Engagement Branch:</span> Like &amp; reply counts log-normalized as weak supervision — highly-liked comments are weighted by crowd validation.
               </div>
             </div>
           </div>

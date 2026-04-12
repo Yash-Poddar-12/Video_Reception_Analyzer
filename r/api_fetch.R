@@ -110,6 +110,11 @@ fetch_comments <- function(video_id, api_key, max_comments = 100) {
             author = items$snippet.topLevelComment.snippet.authorDisplayName,
             published_at = items$snippet.topLevelComment.snippet.publishedAt,
             like_count = items$snippet.topLevelComment.snippet.likeCount,
+            reply_count = ifelse(
+                !is.null(items$snippet.totalReplyCount),
+                items$snippet.totalReplyCount,
+                0L
+            ),
             stringsAsFactors = FALSE
         )
         

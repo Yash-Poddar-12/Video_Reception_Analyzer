@@ -9,7 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 60000, // 60 second timeout for predictions
+  timeout: 120000, // 120 second timeout — MSSF transformer inference is slower than NB
   headers: {
     'Content-Type': 'application/json',
   },

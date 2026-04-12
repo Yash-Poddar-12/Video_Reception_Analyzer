@@ -25,6 +25,10 @@ module.exports = {
     // YouTube API
     youtubeApiKey: process.env.YOUTUBE_API_KEY,
 
+    // Python MSSF Service
+    pythonServiceUrl: process.env.PYTHON_SERVICE_URL || 'http://localhost:8000',
+    pythonServiceTimeout: parseInt(process.env.PYTHON_SERVICE_TIMEOUT) || 120000,
+
     // Timeouts (in milliseconds)
     apiTimeout: parseInt(process.env.API_TIMEOUT) || 30000,
     rScriptTimeout: parseInt(process.env.R_SCRIPT_TIMEOUT) || 60000,

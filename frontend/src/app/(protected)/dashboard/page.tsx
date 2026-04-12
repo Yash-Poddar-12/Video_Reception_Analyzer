@@ -54,7 +54,7 @@ export default function DashboardPage() {
             SENTIMENT ANALYSIS
           </h1>
           <p className="text-on-surface-variant max-w-xl">
-            Extract probabilistic sentiment data from YouTube comment streams using our Naive Bayes classification engine.
+            Extract probabilistic sentiment data from YouTube comment streams using our Multi-Signal Sentiment Fusion (MSSF) engine — Twitter-RoBERTa + Emoji Branch + Engagement Signal.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export default function DashboardPage() {
       </main>
 
       {/* Loading Overlay */}
-      {isLoading && <LoadingOverlay message="Processing comment stream..." />}
+      {isLoading && <LoadingOverlay message="Running MSSF inference..." />}
     </div>
   );
 }

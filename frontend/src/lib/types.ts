@@ -1,5 +1,5 @@
 // ==============================================================================
-// lib/types.ts - TypeScript Type Definitions
+// lib/types.ts - TypeScript Type Definitions (MSSF v2)
 // ==============================================================================
 
 export interface SampleComment {
@@ -19,7 +19,15 @@ export interface Statistics {
 export interface Interpretation {
   label: string;
   description: string;
-  color: string;
+  emoji: string;
+}
+
+export interface ModelInfo {
+  name: string;
+  backbone: string;
+  branches: string[];
+  mode: string;
+  inferenceMs: number;
 }
 
 export interface PredictionResponse {
@@ -32,10 +40,15 @@ export interface PredictionResponse {
   statistics: Statistics;
   samplePositive: SampleComment[];
   sampleNegative: SampleComment[];
+  modelInfo?: ModelInfo;
   predictions?: Array<{
+    comment_id?: string;
     text: string;
     sentiment: string;
-    probability: number;
+    confidence: number;
+    prob_positive: number;
+    prob_neutral: number;
+    prob_negative: number;
   }>;
 }
 
@@ -45,9 +58,14 @@ export interface HealthResponse {
   checks: {
     server: boolean;
     rscript: boolean;
-    model: boolean;
+    mssfModel: boolean;
     youtubeApi: boolean;
   };
+  services?: {
+    node: string;
+    python: string;
+  };
+  architecture?: string;
   version: string;
   environment: string;
 }

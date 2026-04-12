@@ -47,9 +47,24 @@ data/processed/
 # Trained models
 # models/*.rds
 
+# MSSF model checkpoint (large — ~500MB RoBERTa weights)
+models/mssf_checkpoint/
+
 # Temporary files
 tmp/
 logs/
+
+# =========================
+# 🐍 Python
+# =========================
+python/venv/
+python/__pycache__/
+python/model/__pycache__/
+python/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.python-version
 
 # =========================
 # 📈 Visual outputs
