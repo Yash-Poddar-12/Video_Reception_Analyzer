@@ -144,7 +144,7 @@ router.post('/', async (req, res, next) => {
         });
 
         // ── Return unified response ───────────────────────────────────────────
-        return res.json({
+        const responseData = {
             success: true,
             videoId: fetchResult.video_id,
             commentsAnalyzed: comments.length,
@@ -169,7 +169,12 @@ router.post('/', async (req, res, next) => {
                 mode: mssfResult.model_mode,
                 inferenceMs: mssfResult.processing_time_ms,
             },
-        });
+        };
+
+        const predictionsCsvPath = path.resolve(__dirname, '../../tmp/predictions.csv');
+        appendDashboardExport(responseData, predictionsCsvPath);
+
+        return res.json(responseData);
 
     } catch (error) {
         logger.error('Prediction pipeline failed', { error: error.message });
@@ -278,6 +283,72 @@ function savePredictionsCsv(predictions, comments) {
         logger.info('Predictions CSV saved for R evaluation', { path: outputPath });
     } catch (err) {
         logger.warn('Failed to save predictions CSV', { error: err.message });
+    }
+}
+
+/**
+ * Append to dashboard_data.csv for dashboard exports.
+ */
+function appendDashboardExport(response, predictionsCsvPath) {
+    try {
+        const exportsDir = path.resolve(__dirname, '../../exports');
+        if (!fs.existsSync(exportsDir)) {
+            fs.mkdirSync(exportsDir, { recursive: true });
+        }
+        
+        const dashboardCsvPath = path.join(exportsDir, 'dashboard_data.csv');
+        const fileExists = fs.existsSync(dashboardCsvPath);
+        
+        if (!fs.existsSync(predictionsCsvPath)) return;
+        
+        const raw = fs.readFileSync(predictionsCsvPath, 'utf-8');
+        const lines = raw.split('\n').filter(l => l.trim());
+        if (lines.length < 2) return;
+        
+        const headers = parseCSVLine(lines[0]);
+        const textIdx = headers.findIndex(h => h.toLowerCase() === 'text');
+        const sentIdx = headers.findIndex(h => h.toLowerCase() === 'sentiment');
+        const confIdx = headers.findIndex(h => h.toLowerCase() === 'confidence');
+        const pPosIdx = headers.findIndex(h => h.toLowerCase() === 'prob_positive');
+        const pNeuIdx = headers.findIndex(h => h.toLowerCase() === 'prob_neutral');
+        const pNegIdx = headers.findIndex(h => h.toLowerCase() === 'prob_negative');
+        const likeIdx = headers.findIndex(h => h.toLowerCase() === 'like_count');
+        const replyIdx = headers.findIndex(h => h.toLowerCase() === 'reply_count');
+        
+        const analyzedAt = new Date().toISOString();
+        const exportHeader = 'video_id,comment_text,predicted_label,confidence,prob_positive,prob_neutral,prob_negative,like_count,reply_count,overall_sentiment_score,positive_percent,neutral_percent,negative_percent,analyzed_at';
+        
+        const rows = fileExists ? [] : [exportHeader];
+        
+        for (let i = 1; i < lines.length; i++) {
+            const cols = parseCSVLine(lines[i]);
+            if (!cols[textIdx] && !cols[sentIdx]) continue;
+            
+            const rawText = cols[textIdx] || '';
+            const safeText = `"${rawText.replace(/"/g, '""')}"`;
+            
+            rows.push([
+                response.videoId || '',
+                safeText,
+                cols[sentIdx] || '',
+                cols[confIdx] || 0,
+                cols[pPosIdx] || 0,
+                cols[pNeuIdx] || 0,
+                cols[pNegIdx] || 0,
+                cols[likeIdx] || 0,
+                cols[replyIdx] || 0,
+                response.sentimentScore || 0,
+                response.statistics.positivePercent || 0,
+                response.statistics.neutralPercent || 0,
+                response.statistics.negativePercent || 0,
+                analyzedAt
+            ].join(','));
+        }
+        
+        fs.appendFileSync(dashboardCsvPath, rows.join('\n') + '\n', 'utf-8');
+        logger.info('Dashboard export appended', { path: dashboardCsvPath });
+    } catch (err) {
+        logger.error('Failed to append dashboard export', { error: err.message });
     }
 }
 

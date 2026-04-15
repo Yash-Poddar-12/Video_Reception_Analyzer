@@ -46,11 +46,44 @@ const VISUALIZATIONS = [
     filename: "model_performance.png",
     icon: "trending_up",
   },
+  {
+    id: "top_terms_barchart",
+    title: "Top Terms Analysis",
+    description: "Bar chart showing the most frequent terms per sentiment class",
+    filename: "top_terms_barchart.png",
+    icon: "sort",
+  },
+  {
+    id: "wordcloud_positive",
+    title: "Positive Word Cloud",
+    description: "Most common words in positively classified comments",
+    filename: "wordcloud_positive.png",
+    icon: "cloud",
+  },
+  {
+    id: "wordcloud_negative",
+    title: "Negative Word Cloud",
+    description: "Most common words in negatively classified comments",
+    filename: "wordcloud_negative.png",
+    icon: "cloud_off",
+  },
+  {
+    id: "model_comparison_performance",
+    title: "Model Comparison",
+    description: "Performance comparison across different model configurations",
+    filename: "model_comparison_performance.png",
+    icon: "compare_arrows",
+  },
+  {
+    id: "model_comparison_time",
+    title: "Training Time Comparison",
+    description: "Training time comparison across model configurations",
+    filename: "model_comparison_time.png",
+    icon: "timer",
+  },
 ];
 
 export default function AnalyticsPage() {
-  const powerBIUrl = process.env.NEXT_PUBLIC_POWERBI_EMBED_URL;
-
   return (
     <div className="min-h-screen bg-background text-on-background font-body relative">
       {/* Decorative Background */}
@@ -90,59 +123,26 @@ export default function AnalyticsPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold tracking-tight text-on-surface font-headline">
-                    Interactive Power BI Dashboard
+                    Power BI Dashboard
                   </h2>
                   <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-label">
-                    {powerBIUrl
-                      ? "Drill-down enabled"
-                      : "Configuration required"}
+                    Interactive dashboard built with Power BI Desktop
                   </p>
                 </div>
               </div>
-              {powerBIUrl && (
-                <a
-                  href={powerBIUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-primary hover:opacity-80 transition-opacity"
-                >
-                  Open in Power BI
-                  <span className="material-symbols-outlined text-sm">open_in_new</span>
-                </a>
-              )}
             </div>
 
             {/* Card Content */}
             <div className="p-6">
-              {powerBIUrl ? (
-                <div className="w-full aspect-video bg-surface-container overflow-hidden border border-outline-variant/20">
-                  <iframe
-                    src={powerBIUrl}
-                    className="w-full h-full border-0"
-                    title="Power BI Dashboard"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <div className="w-full aspect-video bg-surface-container flex flex-col items-center justify-center p-8 text-center border border-outline-variant/20">
-                  <div className="w-16 h-16 border border-outline-variant/30 flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-3xl text-outline">globe</span>
-                  </div>
-                  <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline mb-2">
-                    Power BI Not Configured
-                  </h3>
-                  <p className="text-sm text-on-surface-variant max-w-md mb-6">
-                    To enable the interactive dashboard, publish your Power BI report and add the embed URL
-                    to your environment configuration.
-                  </p>
-                  <div className="text-xs text-on-surface-variant bg-surface-container-lowest px-4 py-3 font-mono border border-outline-variant/20">
-                    NEXT_PUBLIC_POWERBI_EMBED_URL=your_url_here
-                  </div>
-                  <p className="text-[10px] uppercase tracking-widest text-outline mt-4 font-label">
-                    See RUN-5.md for setup instructions
-                  </p>
-                </div>
-              )}
+              <div className="relative w-full aspect-video bg-surface-container overflow-hidden border border-outline-variant/20">
+                <Image
+                  src="/dashboard_screenshot.png"
+                  alt="Power BI Dashboard"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -221,37 +221,7 @@ export default function AnalyticsPage() {
           </div>
         </section>
 
-        {/* Info Section */}
-        <section className="border border-outline-variant/20 bg-surface-container-lowest p-8">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-10 h-10 border border-outline-variant/40 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                info
-              </span>
-            </div>
-            <h3 className="text-lg font-bold tracking-tight text-on-surface font-headline">
-              About These Visualizations
-            </h3>
-          </div>
 
-          <div className="space-y-4 text-sm text-on-surface-variant leading-relaxed">
-            <p>
-              <span className="text-primary font-bold">Static visualizations</span> are generated using R scripts from the training data.
-              They provide insights into sentiment distribution, review characteristics, and model performance.
-            </p>
-            <p>
-              <span className="text-primary font-bold">Power BI dashboard</span> offers interactive exploration with filtering, drill-down,
-              and real-time data refresh capabilities. Requires Windows and Power BI Desktop for setup.
-            </p>
-            <div className="pt-4 border-t border-outline-variant/20 flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary text-base">menu_book</span>
-              <p className="text-on-surface-variant">
-                For setup instructions and R code snippets, see{' '}
-                <code className="px-2 py-1 bg-surface-container text-primary font-mono text-xs">RUN-5.md</code>
-              </p>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   );
