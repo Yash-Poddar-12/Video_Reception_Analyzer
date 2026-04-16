@@ -1,0 +1,61 @@
+# ==============================================================================
+# .dockerignore — Root level
+# ==============================================================================
+
+# Node
+node_modules
+**/node_modules
+npm-debug.log*
+
+# Next.js build output
+frontend/.next
+frontend/out
+
+# Python
+python/venv
+python/.venv
+python/__pycache__
+python/model/__pycache__
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+# R
+r/.Rhistory
+r/.RData
+
+# Git
+.git
+.gitignore
+
+# Docker files (no need to COPY them into images)
+**/Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Logs and temp files
+logs/
+tmp/
+exports/
+*.log
+*.tmp
+
+# Large model checkpoint (mount as volume instead)
+models/mssf_checkpoint/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docs & visuals (not needed in container)
+docs/
+visuals/
+*.md
+
+# Data (mount as volume instead of baking into image)
+data/raw/
+data/processed/

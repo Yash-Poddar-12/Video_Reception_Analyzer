@@ -1,0 +1,20 @@
+================================================================
+ MSSF MODEL EVALUATION REPORT (R Layer)
+================================================================
+ Model mode       : checkpoint
+ Test samples     : 5,000
+ Accuracy         : 0.9008  (90.08%)
+ Macro-F1         : 0.9007
+ Weighted-F1      : 0.9007
+----------------------------------------------------------------
+ Class           Precision     Recall       F1    Support
+--------------------------------------------------------
+ positive           0.9275     0.8696   0.8976       2500  AUC=0.966
+ negative           0.8773     0.9320   0.9038       2500  AUC=0.966
+================================================================
+ Confusion Matrix:
+      positive      negative
+    positive          2174
+    negative           170
+================================================================
+ Plots saved to: /Users/aayushsood/Developer/vra/evaluation/r_plots

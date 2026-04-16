@@ -1,0 +1,30 @@
+# ==============================================================================
+# Python MSSF Service Dependencies
+# ==============================================================================
+
+# Core ML
+torch>=2.1.0
+transformers>=4.38.0
+datasets>=2.18.0
+accelerate>=0.27.0
+
+# FastAPI inference server
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+emoji>=2.10.0
+
+# HTTP & utilities
+requests>=2.31.0
+python-dotenv>=1.0.0
+pydantic>=2.6.0
+
+# Progress bars & logging
+tqdm>=4.66.0
+
+# Evaluation & plotting (evaluate.py)
+matplotlib>=3.8.0

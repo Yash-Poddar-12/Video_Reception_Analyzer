@@ -1,0 +1,100 @@
+# =========================
+# 🔐 Environment variables
+# =========================
+.env
+.env.*
+frontend/.env.local
+backend/.env
+
+# =========================
+# 📦 Node / Next.js
+# =========================
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+.next/
+frontend/.next/
+
+out/
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# 🧠 R / Data Science
+# =========================
+.Rhistory
+.RData
+.Ruserdata
+
+# R package library (local installs)
+renv/
+packrat/
+
+# =========================
+# 📊 Data & Models (IMPORTANT)
+# =========================
+# Raw / processed data (can be large)
+data/raw/
+data/processed/
+
+# Trained models
+# models/*.rds
+
+# MSSF model checkpoint (large — ~500MB RoBERTa weights)
+models/mssf_checkpoint/
+
+# Temporary files
+tmp/
+logs/
+
+# =========================
+# 🐍 Python
+# =========================
+python/venv/
+python/__pycache__/
+python/model/__pycache__/
+python/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# =========================
+# 📈 Visual outputs
+# =========================
+visuals/*.png
+visuals/*.jpg
+
+# =========================
+# 💻 OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+# =========================
+# 📊 Power BI
+# =========================
+powerbi/*.pbix
+powerbi/*.pbit
+
+# =========================
+# 🧪 Testing / coverage
+# =========================
+coverage/
+
+# =========================
+# 🚀 Misc
+# =========================
+*.log
+*.tmp
+*.cache
